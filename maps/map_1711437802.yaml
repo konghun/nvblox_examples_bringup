@@ -1,7 +1,0 @@
-image: /workspaces/isaac_ros-dev/src/isaac_ros_nvblox/nvblox_examples/nvblox_examples_bringup/maps/map_1711437802.pgm
-mode: trinary
-resolution: 0.1
-origin: [-10, -9.8, 0]
-negate: 0
-occupied_thresh: 0.65
-free_thresh: 0.25

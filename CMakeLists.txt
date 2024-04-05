@@ -19,8 +19,32 @@ cmake_minimum_required(VERSION 3.5)
 project(nvblox_examples_bringup)
 
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
-install(DIRECTORY config launch
+add_executable(base src/base.cpp)
+ament_target_dependencies(base
+  rclcpp
+  tf2_ros
+  geometry_msgs
+)
+
+add_executable(zed2_camera_link src/zed2_camera_link.cpp)
+ament_target_dependencies(zed2_camera_link
+  rclcpp
+  tf2_ros
+  geometry_msgs
+)
+
+install(TARGETS
+  base
+  zed2_camera_link
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+
+install(DIRECTORY config launch src maps
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()

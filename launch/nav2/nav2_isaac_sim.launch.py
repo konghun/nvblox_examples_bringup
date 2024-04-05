@@ -30,14 +30,13 @@ def generate_launch_description():
     nvblox_bringup_dir = get_package_share_directory('nvblox_examples_bringup')
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
 
-
     # Config file
     nav2_param_file = os.path.join(nvblox_bringup_dir,
                                    'config', 'nav2', 'nav2_isaac_sim.yaml')
 
     # Override the global_frame for all of the nav2 nodes
     param_substitutions = {
-        'global_frame': LaunchConfiguration('global_frame', default='map')}
+        'global_frame': LaunchConfiguration('global_frame', default='odom')}
     configured_params = RewrittenYaml(
             source_file=nav2_param_file,
             root_key='',
@@ -51,9 +50,5 @@ def generate_launch_description():
         launch_arguments={'use_sim_time': 'False',
                           'params_file': configured_params,
                           'autostart': 'True'}.items())
-    
 
-
-
-    return LaunchDescription([
-        nav2_launch])
+    return LaunchDescription([nav2_launch])

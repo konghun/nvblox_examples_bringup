@@ -63,6 +63,7 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('run_nav2')))
 
 
+
     # ZED
     # Note(remos): This was only tested with a ZED2 camera so far.
     zed_launch = IncludeLaunchDescription(
@@ -96,14 +97,14 @@ def generate_launch_description():
                           'global_frame': global_frame}.items(),
         condition=IfCondition(LaunchConfiguration('run_rviz')))
 
-    # # map_server
-    # map_server_node = Node(
-    #     package='nav2_map_server',
-    #     executable='map_server',
-    #     name='map_server',
-    #     output='screen',
-    #     parameters=[{'yaml_filename': '/workspaces/isaac_ros-dev/src/isaac_ros_nvblox/nvblox_examples/nvblox_examples_bringup/maps/map_1711437802.yaml'}],
-    # )
+    # Map server
+    map_server_launch = Node(
+        package='nav2_map_server',
+        executable='map_server',
+        name='map_server',
+        output='screen',
+        parameters=[{'yaml_filename': '/workspaces/isaac_ros-dev/src/isaac_ros_nvblox/nvblox_examples/nvblox_examples_bringup/maps/map_1711932016.yaml'}],
+    )
 
 
     return LaunchDescription([
@@ -111,12 +112,10 @@ def generate_launch_description():
         from_bag_arg,
         bag_path_arg,
         shared_container,
+        zed_launch,
         nvblox_launch,
         bag_play,
-        zed_launch,
-        rviz_launch,
         run_nav2_arg,
-        # map_server_node,
-        nav2_launch
-        ])
-
+        rviz_launch,
+        nav2_launch,
+        map_server_launch])
