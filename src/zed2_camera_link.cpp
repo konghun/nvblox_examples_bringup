@@ -3,35 +3,51 @@
 #include "geometry_msgs/msg/transform_stamped.hpp"
 #include "tf2/LinearMath/Quaternion.h"
 
-class Zed2CameraLinkBroadcaster : public rclcpp::Node
+class BaseLinkBroadcaster : public rclcpp::Node
 {
 public:
-  Zed2CameraLinkBroadcaster() : Node("zed2_camera_link_broadcaster")
+  BaseLinkBroadcaster() : Node("base_link_broadcaster")
   {
     broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
     timer_ = this->create_wall_timer(
       std::chrono::milliseconds(100),
-      std::bind(&Zed2CameraLinkBroadcaster::broadcastZed2CameraLink, this));
+      std::bind(&BaseLinkBroadcaster::broadcastTransforms, this));
   }
 
 private:
-  void broadcastZed2CameraLink()
+  void broadcastTransforms()
   {
-    auto message = geometry_msgs::msg::TransformStamped();
-    message.header.stamp = this->get_clock()->now();
-    message.header.frame_id = "base_link";
-    message.child_frame_id = "zed2_camera_link";
-    message.transform.translation.x = 1.0; // Adjust these values as necessary
-    message.transform.translation.y = 0.0;
-    message.transform.translation.z = 0.0;
-    tf2::Quaternion q;
-    q.setRPY(0, 0, 0); // Adjust the rotation as necessary
-    message.transform.rotation.x = q.x();
-    message.transform.rotation.y = q.y();
-    message.transform.rotation.z = q.z();
-    message.transform.rotation.w = q.w();
+    // Broadcast base_link relative to odom
+    auto base_link_message = geometry_msgs::msg::TransformStamped();
+    base_link_message.header.stamp = this->get_clock()->now();
+    base_link_message.header.frame_id = "odom";
+    base_link_message.child_frame_id = "base_link";
+    base_link_message.transform.translation.x = 0.0;  // Adjust as necessary
+    base_link_message.transform.translation.y = 0.0;
+    base_link_message.transform.translation.z = 0.0;
+    tf2::Quaternion base_link_q;
+    base_link_q.setRPY(0, 0, 0);
+    base_link_message.transform.rotation.x = base_link_q.x();
+    base_link_message.transform.rotation.y = base_link_q.y();
+    base_link_message.transform.rotation.z = base_link_q.z();
+    base_link_message.transform.rotation.w = base_link_q.w();
+    broadcaster_->sendTransform(base_link_message);
 
-    broadcaster_->sendTransform(message);
+    // Broadcast zed2_camera_link relative to base_link
+    auto zed2_camera_link_message = geometry_msgs::msg::TransformStamped();
+    zed2_camera_link_message.header.stamp = this->get_clock()->now();
+    zed2_camera_link_message.header.frame_id = "base_link";
+    zed2_camera_link_message.child_frame_id = "zed2_camera_link";
+    zed2_camera_link_message.transform.translation.x = 0.0;  // Adjust these values as necessary
+    zed2_camera_link_message.transform.translation.y = 0.0;
+    zed2_camera_link_message.transform.translation.z = 0.0;
+    tf2::Quaternion zed2_q;
+    zed2_q.setRPY(0, 0, 0);  // Adjust the rotation as necessary
+    zed2_camera_link_message.transform.rotation.x = zed2_q.x();
+    zed2_camera_link_message.transform.rotation.y = zed2_q.y();
+    zed2_camera_link_message.transform.rotation.z = zed2_q.z();
+    zed2_camera_link_message.transform.rotation.w = zed2_q.w();
+    broadcaster_->sendTransform(zed2_camera_link_message);
   }
 
   rclcpp::TimerBase::SharedPtr timer_;
@@ -41,8 +57,7 @@ private:
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  auto node = std::make_shared<Zed2CameraLinkBroadcaster>();
-  rclcpp::spin(node);
+  rclcpp::spin(std::make_shared<BaseLinkBroadcaster>());
   rclcpp::shutdown();
   return 0;
 }
