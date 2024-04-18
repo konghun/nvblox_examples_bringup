@@ -15,8 +15,8 @@
     esdf_2d_min_height: 0.4
     esdf_2d_max_height: 0.8
     # mesh settings
-    compute_mesh: true
-    mesh_update_rate_hz: 5.0
+    compute_mesh: true # mesh 생성을 활성화 할지 여부
+    mesh_update_rate_hz: 5.0 # mesh 데이터를 얼마나 자주 업데이트 할지 결정하는 빈도
     # color settings
     use_color: true
     max_color_update_hz: 5.0
@@ -64,11 +64,11 @@
       occupied_region_half_width_m: 0.1
       # esdf integrator
       esdf_integrator_min_weight: 0.0001
-      esdf_integrator_max_site_distance_vox: 5.0
-      esdf_integrator_max_distance_m: 2.0
+      esdf_integrator_max_site_distance_vox: 5.0 # ESDF를 계산할떄 고려하는 최대 복셀거리
+      esdf_integrator_max_distance_m: 2.0 # 계산될 최대 유클리드 거리 이는 ESDF의 범위를 제한한다.
       # mesh integrator
-      mesh_integrator_min_weight: 0.0001
-      mesh_integrator_weld_vertices: true
+      mesh_integrator_min_weight: 0.0001 # mesh생성에 사용되는 최소 가중치, 값이 높으면 메쉬를 생성하기 위해 더 많은 데이터가 필요
+      mesh_integrator_weld_vertices: true # mesh의 꼭짓점을 결합할지 여부를 결정
       # tsdf decay integrator
-      tsdf_decay_factor: 0.95
+      tsdf_decay_factor: 0.95 #TSDF가 시간이 지남에 따라 TSDF 값이 점차 감소한다.
 
