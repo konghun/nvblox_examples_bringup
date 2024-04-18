@@ -44,7 +44,7 @@
     depth_qos: "SYSTEM_DEFAULT"
     color_qos: "SYSTEM_DEFAULT"
     # Rviz visualization
-    slice_visualization_attachment_frame_id: "base_link"
+    slice_visualization_attachment_frame_id: "zed2_camera_link"
     slice_visualization_side_length: 10.0
 
     static_mapper:
