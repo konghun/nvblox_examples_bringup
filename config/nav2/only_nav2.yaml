@@ -20,7 +20,7 @@ bt_navigator:
   ros__parameters:
     use_sim_time: True
     global_frame: odom
-    robot_base_frame: zed2_camera_link
+    robot_base_frame: base_link
     odom_topic: /odom
     bt_loop_duration: 20
     default_server_timeout: 40
@@ -98,7 +98,7 @@ controller_server:
     general_goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
       xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 3.14
+      yaw_goal_tolerance: 0.1
       stateful: True
     # DWB parameters
     FollowPath:
@@ -150,7 +150,8 @@ controller_server:
       trans_stopped_velocity: 0.25
       short_circuit_trajectory_evaluation: True
       stateful: True
-      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+      critics: ["ObstacleFootprintCritic","RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+      ObstacleFootprintCritic.scale: 1.0
       BaseObstacle.scale: 0.02
       PathAlign.scale: 32.0
       PathAlign.forward_point_distance: 0.1
@@ -188,7 +189,7 @@ local_costmap:
       update_frequency: 10.0
       publish_frequency: 10.0
       global_frame: odom
-      robot_base_frame: zed2_camera_link
+      robot_base_frame: base_link
       use_sim_time: True
       rolling_window: True
       width: 10
@@ -213,7 +214,7 @@ global_costmap:
       update_frequency: 10.0
       publish_frequency: 10.0
       global_frame: odom
-      robot_base_frame: zed2_camera_link
+      robot_base_frame: base_link
       use_sim_time: True
       rolling_window: True
       width: 200
@@ -274,7 +275,7 @@ behavior_server:
     wait:
       plugin: "nav2_behaviors/Wait"
     global_frame: odom
-    robot_base_frame: zed2_camera_link
+    robot_base_frame: base_link
     transform_tolerance: 0.2
     use_sim_time: true
     simulate_ahead_time: 2.0

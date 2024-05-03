@@ -37,12 +37,6 @@ def generate_launch_description():
     run_nav2_arg = DeclareLaunchArgument(
         'run_nav2', default_value='True',
         description='Whether to run nav2')
-    from_bag_arg = DeclareLaunchArgument(
-        'from_bag', default_value='False',
-        description='Whether to run from a bag or live zed data')
-    bag_path_arg = DeclareLaunchArgument(
-        'bag_path', default_value='rosbag2*',
-        description='Path of the bag (only used if from_bag == True)')
     global_frame = LaunchConfiguration('global_frame',
                                        default='map')
 
@@ -62,24 +56,6 @@ def generate_launch_description():
         launch_arguments={'global_frame': global_frame}.items(),
         condition=IfCondition(LaunchConfiguration('run_nav2')))
 
-
-
-    # ZED
-    # Note(remos): This was only tested with a ZED2 camera so far.
-    zed_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([os.path.join(
-            bringup_dir, 'launch', 'sensors', 'zed2.launch.py')]),
-        launch_arguments={
-            'attach_to_shared_component_container': 'True',
-            'component_container_name': shared_container_name}.items(),
-        condition=UnlessCondition(LaunchConfiguration('from_bag')))
-
-    # Ros2 bag
-    bag_play = ExecuteProcess(
-        cmd=['ros2', 'bag', 'play', LaunchConfiguration('bag_path')],
-        shell=True, output='screen',
-        condition=IfCondition(LaunchConfiguration('from_bag')))
-
     # Rviz
     rviz_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
@@ -87,6 +63,21 @@ def generate_launch_description():
         launch_arguments={'config_name': 'zed_example.rviz',
                           'global_frame': global_frame}.items(),
         condition=IfCondition(LaunchConfiguration('run_rviz')))
+
+
+    odom_base = Node(
+            package='nvblox_examples_bringup',  
+            executable='map_odom_base',  
+            name='map_odom_base_node',   
+            output='screen'
+        )
+
+    map_to_odom = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        arguments=['0', '0', '0', '0', '0', '0', 'map', 'odom'],
+        name='map_to_odom_publisher'
+    )
 
     # Map server
     map_server_launch = Node(
@@ -97,15 +88,27 @@ def generate_launch_description():
         parameters=[{'yaml_filename': '/workspaces/isaac_ros-dev/src/isaac_ros_nvblox/nvblox_examples/nvblox_examples_bringup/maps/map_1713336985.yaml'}],
     )
 
+    # Map server auto activate
+    lifecycle_manager = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager',
+        output='screen',
+        parameters=[{
+            'autostart': True,
+            'node_names': ['map_server']
+        }]
+    )
+
 
     return LaunchDescription([
         run_rviz_arg,
-        from_bag_arg,
-        bag_path_arg,
         shared_container,
-        zed_launch,
-        bag_play,
         run_nav2_arg,
         rviz_launch,
         nav2_launch,
-        map_server_launch])
+        map_server_launch,
+        map_to_odom,
+        odom_base,
+        lifecycle_manager
+        ])
