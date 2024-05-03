@@ -106,6 +106,16 @@ def generate_launch_description():
         parameters=[{'yaml_filename': '/workspaces/isaac_ros-dev/src/isaac_ros_nvblox/nvblox_examples/nvblox_examples_bringup/maps/map_1713336985.yaml'}],
     )
 
+    lifecycle_manager = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager',
+        output='screen',
+        parameters=[{
+            'autostart': True,
+            'node_names': ['map_server']
+        }]
+    )
 
     return LaunchDescription([
         run_rviz_arg,
@@ -118,4 +128,5 @@ def generate_launch_description():
         run_nav2_arg,
         rviz_launch,
         nav2_launch,
-        map_server_launch])
+        map_server_launch,
+        lifecycle_manager])
