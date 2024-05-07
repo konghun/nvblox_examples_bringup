@@ -102,26 +102,16 @@ controller_server:
       stateful: True
     # DWB parameters
     FollowPath:
-      # NOTE(remos): 
-      #   The RotationShimController did not work for Isaac Sim 2023.1.0 at the time of the release.
-      #   Therefore we comment it here and use the DWBLocalPlanner for the moment.
-      # TODO(remos):
-      #   Bring back the RotationShimController when the issue is fixed
-      #   as it offers better navigation performance when doing narrow turns.
+      plugin: "nav2_rotation_shim_controller::RotationShimController"
+      primary_controller: "dwb_core::DWBLocalPlanner"
+      angular_dist_threshold: 0.785
+      forward_sampling_distance: 0.5
+      rotate_to_heading_angular_vel: 0.8
+      max_angular_accel: 3.2
+      simulate_ahead_time: 1.0
 
-      # Rotation Shim Controller params
-      # This will turn the robot in place when the heading difference between the robot
-      # and the path is too big. 
-      # plugin: "nav2_rotation_shim_controller::RotationShimController"
-      # primary_controller: "dwb_core::DWBLocalPlanner"
-      # angular_dist_threshold: 0.3 # ~= 17 degree
-      # forward_sampling_distance: 1.0
-      # rotate_to_heading_angular_vel: 1.8
-      # max_angular_accel: 3.2
-      # simulate_ahead_time: 1.0
 
-      # Primary controller params (DWBLocalPlanner)
-      plugin: "dwb_core::DWBLocalPlanner"
+      dwb_core::DWBLocalPlanner:
       debug_trajectory_details: True
       min_vel_x: 0.0
       min_vel_y: 0.0
@@ -131,14 +121,12 @@ controller_server:
       min_speed_xy: 0.0
       max_speed_xy: 1.0
       min_speed_theta: 0.0
-      # Add high threshold velocity for turtlebot 3 issue.
-      # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
       acc_lim_x: 0.4
       acc_lim_y: 0.0
-      acc_lim_theta: 0.4
+      acc_lim_theta: 0.8
       decel_lim_x: -0.4
       decel_lim_y: 0.0
-      decel_lim_theta: -0.4
+      decel_lim_theta: -0.8
       vx_samples: 30
       vy_samples: 10
       vtheta_samples: 20
