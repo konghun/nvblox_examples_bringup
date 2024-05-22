@@ -149,7 +149,6 @@ controller_server:
       RotateToGoal.scale: 32.0
       RotateToGoal.slowing_factor: 1.0
       RotateToGoal.lookahead_time: -1.0
-      min_obstacle_dist: 0.3
 
 # Update velocity smoother default params to match our controller server config
 # https://navigation.ros.org/configuration/packages/configuring-velocity-smoother.html
@@ -211,10 +210,16 @@ global_costmap:
       resolution: 0.1
       origin_x: -100.0
       origin_y: -100.0
-      plugins: ["static_layer"]
+      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_topic: "/map"
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        inflation_radius: 0.25  # 장애물 근처의 코스트 확장 반경
+        cost_scaling_factor: 10.0  # 장애물 주변 코스트 증가율
       always_send_full_costmap: True
   global_costmap_client:
     ros__parameters:
