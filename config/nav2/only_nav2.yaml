@@ -138,8 +138,7 @@ controller_server:
       trans_stopped_velocity: 0.25
       short_circuit_trajectory_evaluation: True
       stateful: True
-      critics: ["ObstacleFootprintCritic","RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-      ObstacleFootprintCritic.scale: 1.0
+      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
       BaseObstacle.scale: 0.02
       PathAlign.scale: 32.0
       PathAlign.forward_point_distance: 0.1
@@ -150,6 +149,7 @@ controller_server:
       RotateToGoal.scale: 32.0
       RotateToGoal.slowing_factor: 1.0
       RotateToGoal.lookahead_time: -1.0
+      min_obstacle_dist: 0.3
 
 # Update velocity smoother default params to match our controller server config
 # https://navigation.ros.org/configuration/packages/configuring-velocity-smoother.html
