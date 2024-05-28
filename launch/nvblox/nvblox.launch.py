@@ -106,20 +106,22 @@ def generate_launch_description():
 
         # Remappings for zed
 	    SetRemap(src=['depth/image'],
-                 dst=['/zed2/zed_node/depth/depth_registered'],
+                 dst=['/zed_node/depth/depth_registered'],
                  condition=setup_for_zed),
         SetRemap(src=['depth/camera_info'],
-                 dst=['/zed2/zed_node/depth/camera_info'],
+                 dst=['/zed_node/depth/camera_info'],
                  condition=setup_for_zed),
         SetRemap(src=['color/image'],
-                 dst=['/zed2/zed_node/rgb/image_rect_color'],
+                 dst=['/zed_node/rgb/image_rect_color'],
                  condition=setup_for_zed),
         SetRemap(src=['color/camera_info'],
-                 dst=['/zed2/zed_node/rgb/camera_info'],
+                 dst=['/zed_node/rgb/camera_info'],
                  condition=setup_for_zed),
         SetRemap(src=['pose'],
-                 dst=['/zed2/zed_node/pose'],
+                 dst=['/visual_slam/tracking/vo_pose'],
                  condition=setup_for_zed),
+
+
 
         # Remappings for isaac sim data
         SetRemap(src=['depth/image'],
