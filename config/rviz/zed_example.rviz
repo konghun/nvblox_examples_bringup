@@ -36,8 +36,6 @@ Visualization Manager:
           Value: true
         zed2_camera_center:
           Value: true
-        zed2_camera_link:
-          Value: true
         zed2_left_camera_frame:
           Value: true
         zed2_left_camera_optical_frame:
